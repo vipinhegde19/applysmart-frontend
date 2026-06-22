@@ -8,7 +8,7 @@ function Register() {
   const[password,setPassword]=useState('')
   async function handleRegister() {
     try {
-      await axios.post('http://localhost:8000/auth/register',{
+      await axios.post(' https://applysmart-1-jhr4.onrender.com/auth/register',{
         name:name,
         email:email,
         password:password

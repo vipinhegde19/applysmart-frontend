@@ -20,7 +20,7 @@ function AddJob() {
       notes: notes
     }
     try {
-      await axios.post('http://localhost:8000/jobs/', jobData, {
+      await axios.post(' https://applysmart-1-jhr4.onrender.com/jobs/', jobData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
