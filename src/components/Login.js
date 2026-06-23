@@ -1,15 +1,15 @@
 import { useState } from "react"
-import axios from "axios"
+import api from "../api"
 import '../App.css'
 function Login() {
     const [eamil,setEmail]=useState('')
     const [password,setPassword]=useState('')
    async function handlelogin(){
-        const formData=new FormData
+        const formData=new FormData()
         formData.append('username',eamil)
         formData.append('password',password)
         try {
-            const response=await axios.post(' https://applysmart-1-jhr4.onrender.com/auth/login',formData)
+            const response=await api.post('/auth/login',formData)
             const token=response.data.access_token
             localStorage.setItem('token',token)
             window.location.href='/dashboard'

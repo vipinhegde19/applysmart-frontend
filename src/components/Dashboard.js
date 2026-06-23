@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../api'
 import '../App.css'
 
 function Dashboard() {
@@ -17,8 +17,8 @@ function Dashboard() {
       return
     }
     try {
-      const response = await axios.get(
-        'https://applysmart-1-jhr4.onrender.com/jobs/',
+      const response = await api.get(
+        '/jobs/',
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -34,8 +34,8 @@ function Dashboard() {
   async function handleDelete(jobId) {
     const token = localStorage.getItem('token')
     try {
-      await axios.delete(
-        `https://applysmart-1-jhr4.onrender.com/jobs/${jobId}`,
+      await api.delete(
+        `/jobs/${jobId}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -49,8 +49,8 @@ function Dashboard() {
   async function handleStatusUpdate(jobId, newStatus) {
     const token = localStorage.getItem('token')
     try {
-      await axios.put(
-        `https://applysmart-1-jhr4.onrender.com/jobs/${jobId}`,
+      await api.put(
+        `/jobs/${jobId}`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` }

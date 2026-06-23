@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from "axios"
+import api from "../api"
 import '../App.css'
 
 function Register() {
@@ -8,7 +8,7 @@ function Register() {
   const[password,setPassword]=useState('')
   async function handleRegister() {
     try {
-      await axios.post(' https://applysmart-1-jhr4.onrender.com/auth/register',{
+      await api.post('/auth/register',{
         name:name,
         email:email,
         password:password

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../api'
 import '../App.css'
 
 function AddJob() {
@@ -20,7 +20,7 @@ function AddJob() {
       notes: notes
     }
     try {
-      await axios.post(' https://applysmart-1-jhr4.onrender.com/jobs/', jobData, {
+      await api.post('/jobs/', jobData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
