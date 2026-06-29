@@ -52,7 +52,8 @@ const [aiLoading, setAiLoading] = useState(false)
         )
         setAiOutput(response.data.tailored_resume)
     } catch (error) {
-      alert("Failed to fetch resume")
+      console.error('Error tailoring resume:', error.response?.data || error.message)
+      alert(error.response?.data?.detail || "Failed to fetch resume")
       
     }finally{
       setAiLoading(false)
