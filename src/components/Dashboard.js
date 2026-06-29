@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react'
 import api from '../api'
 import '../App.css'
+import axios from 'axios'
 
 function Dashboard() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const [activeJob, setActiveJob] = useState(null)
+const [resumeBullets, setResumeBullets] = useState('')
+const [aiOutput, setAiOutput] = useState('')
+const [aiLoading, setAiLoading] = useState(false)
 
   useEffect(() => {
     fetchJobs()
@@ -29,6 +35,30 @@ function Dashboard() {
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleTailorResume(jobId) {
+    const token=localStorage.getItem('token')
+        console.log("Token for AI:", token)  // add this
+    console.log("Job ID:", jobId)  
+    setAiLoading(true)
+    setAiOutput('')
+    try {
+        const response= await axios.post(
+          `https://applysmart-1-jhr4.onrender.com/jobs/${jobId}/tailor-resume`,
+          {resume_bullets:resumeBullets},
+          {
+            headers:{Authorization: 'Bearer ${token}'}
+          }
+        )
+        setAiOutput(response.data.tailored_resume)
+    } catch (error) {
+      alert("Failed to fetch resume")
+      
+    }finally{
+      setAiLoading(false)
+    }
+    
   }
 
   async function handleDelete(jobId) {
@@ -87,31 +117,67 @@ function Dashboard() {
         {jobs.length === 0 ? (
           <p>No jobs added yet. Click Add Job to start tracking.</p>
         ) : (
-          jobs.map((job) => (
-            <div className="card" key={job.id}>
-              <div>
-                <h3>{job.company}</h3>
-                <p>{job.role}</p>
-              </div>
-              <div>
-                <select
-                  value={job.status}
-                  onChange={(e) => handleStatusUpdate(job.id, e.target.value)}
-                >
-                  <option>Applied</option>
-                  <option>Interview Scheduled</option>
-                  <option>Rejected</option>
-                  <option>Offer Received</option>
-                </select>
+jobs.map((job) => (
+    <div className="card" key={job.id}>
+        <div>
+            <h3>{job.company}</h3>
+            <p>{job.role}</p>
+        </div>
+        <div>
+            <select
+                value={job.status}
+                onChange={(e) => handleStatusUpdate(job.id, e.target.value)}
+            >
+                <option>Applied</option>
+                <option>Interview Scheduled</option>
+                <option>Rejected</option>
+                <option>Offer Received</option>
+            </select>
+            <button
+                className="delete-btn"
+                onClick={() => handleDelete(job.id)}
+            >
+                Delete
+            </button>
+        </div>
+
+        {/* AI Buttons */}
+        <div style={{width: '100%', marginTop: '10px'}}>
+            <button
+                onClick={() => setActiveJob(activeJob === job.id ? null : job.id)}
+                style={{backgroundColor: '#7c3aed', marginRight: '10px'}}
+            >
+                🤖 Tailor Resume
+            </button>
+        </div>
+
+        {/* AI Panel */}
+        {activeJob === job.id && (
+            <div style={{width: '100%', marginTop: '15px'}}>
+                <textarea
+                    placeholder="Paste your resume bullets here..."
+                    value={resumeBullets}
+                    onChange={(e) => setResumeBullets(e.target.value)}
+                    style={{width: '100%', height: '100px', padding: '10px', borderRadius: '8px', border: '1px solid #ddd'}}
+                />
                 <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(job.id)}
+                    onClick={() => handleTailorResume(job.id)}
+                    disabled={aiLoading}
+                    style={{backgroundColor: '#7c3aed', marginTop: '10px'}}
                 >
-                  Delete
+                    {aiLoading ? 'Generating...' : 'Generate'}
                 </button>
-              </div>
+
+                {aiOutput && (
+                    <div style={{marginTop: '15px', padding: '15px', backgroundColor: '#f0f4ff', borderRadius: '8px'}}>
+                        <h4>Tailored Resume Bullets:</h4>
+                        <p style={{whiteSpace: 'pre-wrap'}}>{aiOutput}</p>
+                    </div>
+                )}
             </div>
-          ))
+        )}
+    </div>
+))
         )}
       </div>
     </div>
