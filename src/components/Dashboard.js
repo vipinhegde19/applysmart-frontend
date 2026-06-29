@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from '../api'
 import '../App.css'
-import axios from 'axios'
 
 function Dashboard() {
   const [jobs, setJobs] = useState([])
@@ -44,11 +43,11 @@ const [aiLoading, setAiLoading] = useState(false)
     setAiLoading(true)
     setAiOutput('')
     try {
-        const response= await axios.post(
-          `https://applysmart-1-jhr4.onrender.com/jobs/${jobId}/tailor-resume`,
+        const response= await api.post(
+          `/jobs/${jobId}/tailor-resume`,
           {resume_bullets:resumeBullets},
           {
-            headers:{Authorization: 'Bearer ${token}'}
+            headers:{Authorization: `Bearer ${token}`}
           }
         )
         setAiOutput(response.data.tailored_resume)
