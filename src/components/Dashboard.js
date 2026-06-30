@@ -5,6 +5,7 @@ import '../App.css'
 function Dashboard() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeFeature, setActiveFeature] = useState('')
 
   const [activeJob, setActiveJob] = useState(null)
   const [resumeBullets, setResumeBullets] = useState('')
@@ -165,7 +166,11 @@ function Dashboard() {
               {/* AI Buttons */}
               <div style={{ width: '100%', marginTop: '10px' }}>
                 <button
-                  onClick={() => setActiveJob(activeJob === job.id ? null : job.id)}
+                  onClick={() => {
+                    setActiveJob(activeJob === job.id ? null : job.id)
+                    setActiveFeature('tailor')
+                    setAiOutput('')
+                  }}
                   style={{ backgroundColor: '#7c3aed', marginRight: '10px' }}
                 >
                   🤖 Tailor Resume
@@ -173,7 +178,8 @@ function Dashboard() {
                 <button
                   onClick={() => {
                     setActiveJob(activeJob === job.id ? null : job.id)
-                    handleInterviewPrep(job.id)
+                    setActiveFeature('interview')
+                    setAiOutput('')
                   }}
                   style={{ backgroundColor: '#0891b2', marginLeft: '10px' }}
                 >
@@ -190,14 +196,19 @@ function Dashboard() {
                     onChange={(e) => setResumeBullets(e.target.value)}
                     style={{ width: '100%', height: '100px', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }}
                   />
-                  <button
-                    onClick={() => handleTailorResume(job.id)}
-                    disabled={aiLoading}
-                    style={{ backgroundColor: '#7c3aed', marginTop: '10px' }}
-                  >
-                    {aiLoading ? 'Generating...' : 'Generate'}
-                  </button>
-
+  <button
+    onClick={() => {
+        if (activeFeature === 'tailor') {
+            handleTailorResume(job.id)
+        } else {
+            handleInterviewPrep(job.id)
+        }
+    }}
+    disabled={aiLoading}
+    style={{backgroundColor: '#7c3aed', marginTop: '10px'}}
+>
+    {aiLoading ? 'Generating...' : 'Generate'}
+</button>
                   {aiOutput && (
                     <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#f0f4ff', borderRadius: '8px' }}>
                       <h4>Tailored Resume Bullets:</h4>
