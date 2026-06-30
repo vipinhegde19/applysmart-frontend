@@ -67,7 +67,7 @@ function Dashboard() {
     setAiOutput('')
     try {
       const response = await api.post(
-        `/jobs/${jobId}/interview-questions`,
+        `/jobs/${jobId}/interview_questions`,
         { resume_bullets: resumeBullets },
         {
           headers: { Authorization: `Bearer ${token}` }
