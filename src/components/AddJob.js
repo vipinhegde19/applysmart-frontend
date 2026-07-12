@@ -1,4 +1,35 @@
-return (
+import { useState } from 'react'
+import api from '../api'
+import '../App.css'
+
+function AddJob() {
+  const [company, setCompany] = useState('')
+  const [role, setRole] = useState('')
+  const [status, setStatus] = useState('Applied')
+  const [jobDescription, setJobDescription] = useState('')
+  const [notes, setNotes] = useState('')
+
+  async function handleSubmit() {
+    const token = localStorage.getItem('token')
+    const jobData = {
+      company: company,
+      role: role,
+      status: status,
+      job_description: jobDescription,
+      notes: notes
+    }
+    try {
+      await api.post('/jobs/', jobData, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      alert('Job added successfully')
+      window.location.href = '/dashboard'
+    } catch (error) {
+      alert('Failed to add job')
+    }
+  }
+
+  return (
     <div className="add-job-wrapper">
       <div style={{marginBottom: '32px'}}>
         <a href="/dashboard" style={{color: '#697386', fontSize: '14px', textDecoration: 'none'}}>
@@ -66,3 +97,6 @@ return (
       </div>
     </div>
   )
+}
+
+export default AddJob
