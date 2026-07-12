@@ -20,7 +20,7 @@ function Login() {
     }
   return (
 <div className="auth-container">
-      <h1>Login to applysamrt</h1>
+      <h1>Login to applysmart</h1>
       <input 
       type="email"
       placeholder="Email"

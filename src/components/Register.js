@@ -24,7 +24,7 @@ function Register() {
   return (
 <div className="auth-container">
 
-      <h1>Register for applysamrt</h1>
+      <h1>Register for applysmart</h1>
       <input
       type="text"
       placeholder="Fullname"
