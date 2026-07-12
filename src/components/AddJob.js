@@ -1,82 +1,68 @@
-import { useState } from 'react'
-import api from '../api'
-import '../App.css'
+return (
+    <div className="add-job-wrapper">
+      <div style={{marginBottom: '32px'}}>
+        <a href="/dashboard" style={{color: '#697386', fontSize: '14px', textDecoration: 'none'}}>
+          ← Back to Dashboard
+        </a>
+      </div>
 
-function AddJob() {
-  const [company, setCompany] = useState('')
-  const [role, setRole] = useState('')
-  const [status, setStatus] = useState('Applied')
-  const [jobDescription, setJobDescription] = useState('')
-  const [notes, setNotes] = useState('')
+      <h1 className="page-title">Add New Application</h1>
+      <p className="page-subtitle">Track a new job you've applied to.</p>
 
-  async function handleSubmit() {
-    const token = localStorage.getItem('token')
-    console.log("Token:", token)
-    const jobData = {
-      company: company,
-      role: role,
-      status: status,
-      job_description: jobDescription,
-      notes: notes
-    }
-    try {
-      await api.post('/jobs/', jobData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      alert("Job added successfully")
-      window.location.href = '/dashboard'
-    } catch (error) {
-      alert('Failed to add job')
-    }
-  }
+      <div style={{background: 'white', border: '1px solid #e3e8ee', borderRadius: '12px', padding: '32px'}}>
+        <div className="form-group">
+          <label className="form-label">Company Name</label>
+          <input
+            type="text"
+            placeholder="e.g. Google"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+          />
+        </div>
 
-  return (
-  <div className="auth-container">
-      <h1>Add Job to ApplySmart</h1>
+        <div className="form-group">
+          <label className="form-label">Role</label>
+          <input
+            type="text"
+            placeholder="e.g. Backend Developer"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Company Name"
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-      />
+        <div className="form-group">
+          <label className="form-label">Status</label>
+          <input
+            type="text"
+            placeholder="Applied"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Role"
-        value={role}
-        onChange={(e) => setRole(e.target.value)}
-      />
+        <div className="form-group">
+          <label className="form-label">Job Description</label>
+          <textarea
+            placeholder="Paste the job description here — the AI will use this for resume tailoring and interview prep"
+            value={jobDescription}
+            onChange={(e) => setJobDescription(e.target.value)}
+            style={{minHeight: '120px'}}
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Status"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      />
+        <div className="form-group">
+          <label className="form-label">Notes</label>
+          <input
+            type="text"
+            placeholder="Any notes about this application"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Job Description"
-        value={jobDescription}
-        onChange={(e) => setJobDescription(e.target.value)}
-      />
-
-      <input
-        type="text"
-        placeholder="Notes"
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-      />
-
-    <button onClick={handleSubmit}>Add Job</button>
-    <p style={{marginTop: '15px', textAlign: 'center'}}>
-      <a href="/dashboard">Back to Dashboard</a>
-    </p>
+        <button className="auth-btn" onClick={handleSubmit}>
+          Save Application
+        </button>
+      </div>
     </div>
   )
-}
-
-export default AddJob
