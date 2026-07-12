@@ -1,4 +1,115 @@
-return (
+import { useState, useEffect } from 'react'
+import api from '../api'
+import '../App.css'
+
+function Dashboard() {
+  const [jobs, setJobs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [activeJob, setActiveJob] = useState(null)
+  const [activeFeature, setActiveFeature] = useState('')
+  const [resumeBullets, setResumeBullets] = useState('')
+  const [aiOutput, setAiOutput] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+
+  useEffect(() => {
+    fetchJobs()
+  }, [])
+
+  async function fetchJobs() {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      window.location.href = '/login'
+      return
+    }
+    try {
+      const response = await api.get('/jobs/', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      setJobs(response.data)
+    } catch (error) {
+      console.error('Error fetching jobs:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleDelete(jobId) {
+    const token = localStorage.getItem('token')
+    try {
+      await api.delete(`/jobs/${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      fetchJobs()
+    } catch (error) {
+      alert('Failed to delete job')
+    }
+  }
+
+  async function handleStatusUpdate(jobId, newStatus) {
+    const token = localStorage.getItem('token')
+    try {
+      await api.put(`/jobs/${jobId}`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      fetchJobs()
+    } catch (error) {
+      alert('Failed to update status')
+    }
+  }
+
+  async function handleTailorResume(jobId) {
+    const token = localStorage.getItem('token')
+    setAiLoading(true)
+    setAiOutput('')
+    try {
+      const response = await api.post(
+        `/jobs/${jobId}/tailor-resume`,
+        { resume_bullets: resumeBullets },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setAiOutput(response.data.tailored_resume)
+    } catch (error) {
+      console.error('Error tailoring resume:', error.response?.data || error.message)
+      alert(error.response?.data?.detail || 'Failed to tailor resume')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  async function handleInterviewPrep(jobId) {
+    const token = localStorage.getItem('token')
+    setAiLoading(true)
+    setAiOutput('')
+    try {
+      const response = await api.post(
+        `/jobs/${jobId}/interview_questions`,
+        { resume_bullets: resumeBullets },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setAiOutput(response.data["Interview Questions"])
+    } catch (error) {
+      console.error('Error preparing interview questions:', error.response?.data || error.message)
+      alert(error.response?.data?.detail || 'Failed to prepare interview questions')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-wrapper">
+        <p>Loading your applications...</p>
+      </div>
+    )
+  }
+
+  return (
     <div>
       <div className="navbar">
         <h2>ApplySmart</h2>
@@ -96,3 +207,6 @@ return (
       </div>
     </div>
   )
+}
+
+export default Dashboard
